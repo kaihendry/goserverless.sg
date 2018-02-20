@@ -35,6 +35,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.New("").ParseGlob("templates/*.html"))
 	t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
+		"Header":         r.Header,
 	})
 	// We could also retrieve the token directly from csrf.Token(r) and
 	// set it in the request header - w.Header.Set("X-CSRF-Token", token)

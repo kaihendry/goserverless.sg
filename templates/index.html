@@ -1,11 +1,25 @@
-<html>
-<head><title>Go serverless</title></head>
-<body>
-<form action="/" method="post">
-    <p>Enter withdrawal amount:</p>
-    <input type="text" size="5" name="amount" value="5000">
-    {{ .csrfField }}
-    <p><button type="submit">Submit</button></p>
-</form>
-</body>
-</html>
+<script src="https://unpkg.com/vue"></script>
+<div id="app">
+${ message }
+</div>
+
+<script>
+var app = new Vue({
+  delimiters: ['${', '}'],
+  el: '#app',
+  data: {
+	message: 'Hello Vue!'
+  }
+})
+</script>
+
+<p>{{ .csrfField }}</p>
+
+<p>Country: {{ index .Header "Cloudfront-Viewer-Country" }}</p>
+
+<h3>Request Header</h3>
+<dl>
+{{range $key, $value := .Header -}}
+<dt>{{ $key }}</dt><dd>{{ $value }}</dd>
+{{end}}
+</dl>
