@@ -1,13 +1,15 @@
 {
 	"name": "goserverless",
-	"type": "static",
 	"profile": "gosls",
 	"regions": ["ap-southeast-1"],
 	"stages": {
 		"production": {
 			"domain": "goserverless.sg"
+		},
+		"staging": {
+			"domain": "beta.goserverless.sg"
 		}
-	},
+},
 	"error_pages": {
 		"variables": {
 			"support_email": "hendry@goserverless.sg",

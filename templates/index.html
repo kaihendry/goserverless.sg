@@ -1,0 +1,11 @@
+<html>
+<head><title>Go serverless</title></head>
+<body>
+<form action="/" method="post">
+    <p>Enter withdrawal amount:</p>
+    <input type="text" size="5" name="amount" value="5000">
+    {{ .csrfField }}
+    <p><button type="submit">Submit</button></p>
+</form>
+</body>
+</html>
