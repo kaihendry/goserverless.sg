@@ -6,7 +6,7 @@
 </head>
 <body>
 <div id="app">
-<form v-on:submit.prevent="submitForm">
+<form id="myForm" v-on:submit.prevent="submitForm">
 <input v-model="message">
 <p>Message is: ${ message }</p>
 {{ .csrfField }}
@@ -23,8 +23,11 @@ var app = new Vue({
 	},
 	methods: {
 	submitForm: function (x) {
-		console.log('submitting message...', x);
+		console.log('submitting message...', x)
+		console.log('target...', x.target)
 		fetch('/', { method: 'POST',
+			headers: { "X-CSRF-Token": document.getElementById("myForm").elements["gorilla.csrf.Token"].value },
+			credentials: 'same-origin',
 			body: {
 			message: this.message
 		}}).then(function () {
@@ -40,5 +43,11 @@ var app = new Vue({
 
 <p>Country:  {{ .EmojiCountry }}</p>
 <p>Stage:  {{ .Stage }}</p>
+
+<form method=POST>
+{{ .csrfField }}
+<button type="submit">Send</button>
+</form>
+
 </body>
 </html>
