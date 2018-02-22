@@ -32,6 +32,7 @@ main {
   }
 }
 
+video { max-width: 100%; height: auto; }
 th { vertical-align: top; }
 tr th, tr td { text-align: left; }
 table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
@@ -141,9 +142,9 @@ and try an introduction to <a
 
 <p>Assuming an execution time of 100ms or less on minimum 128 lambda as this demo is configured and <strong>ignoring Free Tier</strong>.</p>
 
-<p><label>Number of requests: <input v-model="requests"></label></p>
+<p><label>Number of requests: <input type=number v-model.number="requests"></label></p>
 
-<p><label>Estimated outbound bandwidth in GB<input v-model="outbound"></label></p>
+<p><label>Estimated outbound bandwidth in GB<input type=number v-model.number="outbound"></label></p>
 <p><a href="https://aws.amazon.com/lambda/pricing/">Lambda</a>: $0.20 per 1 million requests = ${ requestcost }</p>
 <p>Lambda: $0.000000208 per &lt;= 100 ms request duration = ${ durationcost.toFixed(2) }</p>
 <p><a href="https://aws.amazon.com/api-gateway/pricing">API Gateway</a>: $4.25 per million = ${ gwcost }</p>
