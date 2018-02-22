@@ -12,13 +12,39 @@ main {
 	margin: 1rem auto; 
 	width: 80%;
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
 	grid-column-gap: 1em;
-	grid-auto-columns: fit-content(20%);
-	grid-template-rows: fit-content(40%);
+	grid-template-areas: "why video"
+                         "product contact"
+                         "services ."
+						 "footer footer"
+  }
+
+@media screen and (max-width: 1000px) {
+  main {
+	  grid-row-gap: 1em;
+	  grid-template-areas:"why"
+						  "video"
+						  "contact"
+						  "product"
+						  "services"
+						  "footer";
+  }
 }
+
+th { vertical-align: top; }
+tr th, tr td { text-align: left; }
+table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
+
+#why { grid-area: why; }
+#video { grid-area: video; }
+#services { grid-area: services; }
+#product { grid-area: product; }
+#contact { grid-area: contact; }
+footer { grid-area: footer; }
+
 .sg { color : red }
 form { display: flex; flex-direction: column; }
+form input,textarea { margin: 0.5em; padding: 0.5em }
 .button {
   display: inline-block;
   padding: 15px 25px;
@@ -48,7 +74,7 @@ form { display: flex; flex-direction: column; }
 </head>
 <body>
 <main>
-<div>
+<div id="why">
 <h1>Why go serverless {{ .EmojiCountry }}?</h1>
 
 <ol>
@@ -58,22 +84,55 @@ form { display: flex; flex-direction: column; }
 	<li>Reliable</li>
 </ol>
 
-And fast iteration speeds!
+And faster iteration speeds!
 </div>
-<div>
+<div id="video">
 <video poster="https://res.cloudinary.com/hendry/image/upload/f_auto,q_auto:eco/v1519267526/me_stj81s.jpg" width="640" height="360" controls src="https://s.natalian.org/2018-02-20/Goserverless.SG.mp4"></video>
 </div>
-<div id="services">
-<h3>AWS region rank by service count</h3>
 
-<ol>
-<li v-for="region in regions" v-bind:class="{ sg: region.name == 'ap-southeast-1' }">
-  ${ region.name } - ${ region.count }
-</li>
-</ol>
+<div id="product">
+
+<h3>The product</h3>
+
+<ul>
+<li>Professional services on a contract basis</li>
+<li>Training</li>
+<li><abbr title="Amazon Web Service">AWS</abbr> accredited with extensive experience</li>
+</ul>
+
+<p>Addressing pain points like:</p>
+
+<ul>
+<li>Re-architecting solutions for Serverless</li>
+<li>Testing</li>
+<li>Developing applications using AWS SDK APIs</li>
+<li>Multiple region handling</li>
+</ul>
+
+<p>View <a href="https://hendry.iki.fi/cv/resume.html">my CV</a>, watch my <a
+	href="https://engineers.sg/episodes/search?search=kai+hendry">presentations</a>
+and learn with an introduction to <a
+ href="https://www.youtube.com/watch?v=ckNUGahEe8w">Serverless with Apex
+ UP</a>.</p>
 
 </div>
-<div id="app">
+
+<div id="services">
+<h2>Serverless demo</h2>
+
+<table>
+<tr>
+<th>Rank</th>
+<th>Region name</th>
+<th>Service count</th>
+</tr>
+	<tr v-for="(region, index) in regions" v-bind:class="{ sg: region.name == 'ap-southeast-1' }">
+	<td>${ index + 1 }</td><td>${ region.name }</td><td>${ region.count }</td>
+</tr>
+</table>
+
+</div>
+<div id="contact">
 <h3>Contact form</h3>
 <form id="myForm" v-on:submit.prevent="submitForm">
 <input required type=text name=given-name placeholder="First" autofocus>
@@ -89,7 +148,7 @@ And fast iteration speeds!
 </form>
 </div>
 <footer>
-<p>Goserverless is a brand operating under © Webconverger Pte Ltd 2007-2018, Company No. 201211208C, 30 Duxton Road #02-00, 089494, Singapore.</p>
+<p>Go Serverless is a brand operating under © <a href="https://webconverger.com/">Webconverger Pte Ltd</a> 2007-2018, Company No. 201211208C, 30 Duxton Road #02-00, 089494, Singapore.</p>
 </footer>
 </main>
 
