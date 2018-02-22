@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -62,6 +63,13 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
 
+	payload, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -81,7 +89,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			Body: &ses.Body{
 				Text: &ses.Content{
 					Charset: aws.String("UTF-8"),
-					Data:    aws.String("This is the message body in text format."),
+					Data:    aws.String(string(payload)),
 				},
 			},
 			Subject: &ses.Content{

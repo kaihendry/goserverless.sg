@@ -17,8 +17,17 @@ grid-template-rows: fit-content(40%);
 <p>Country:  {{ .EmojiCountry }}</p>
 <div id="app">
 <form id="myForm" v-on:submit.prevent="submitForm">
-<input v-model="message">
-<p>Message is: ${ message }</p>
+<input required type=text name=given-name placeholder="First" autofocus>
+<input required type=text name=family-name placeholder="Last">
+<input required type=email name=email placeholder="email@example.com">
+<input required type=text name=organization placeholder="Organisation">
+<input type=text name=street-address placeholder="Street">
+<input type=text name=address-level2 placeholder="City">
+<input type=text name=country-name placeholder="Country">
+<input type=text name=postal-code placeholder="Postal code">
+<input type=tel name=tel placeholder="Telephone">
+<input type=url name=url placeholder="https://example.com">
+<textarea rows=5 name="notes" placeholder="Prefer a callback? Please let us know a time good for you.  Please put any relevant details about the kiosk deployment here."></textarea>
 {{ .csrfField }}
 <button type="submit">Send</button>
 </form>
@@ -29,9 +38,6 @@ grid-template-rows: fit-content(40%);
 var app = new Vue({
 	delimiters: ['${', '}'],
 	el: '#app',
-	data: {
-		message: 'Hello Vue!'
-	},
 	methods: {
 	submitForm: function (x) {
 		console.log('submitting message...', x)
@@ -39,9 +45,8 @@ var app = new Vue({
 		fetch('/', { method: 'POST',
 			headers: { "X-CSRF-Token": document.getElementById("myForm").elements["gorilla.csrf.Token"].value },
 			credentials: 'same-origin',
-			body: {
-			message: this.message
-		}}).then(function () {
+			body: new FormData(x.target) })
+		.then(function () {
 			alert('Your form was submitted!');
 		}, function () {
 			alert('Form submission failed');
