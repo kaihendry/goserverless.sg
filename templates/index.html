@@ -5,10 +5,9 @@
 <script src="https://unpkg.com/vue"></script>
 <style>
 main {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-grid-template-rows: fit-content(40%);
-
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: fit-content(40%);
 }
 </style>
 </head>
@@ -29,7 +28,7 @@ grid-template-rows: fit-content(40%);
 <input type=url name=url placeholder="https://example.com">
 <textarea rows=5 name="notes" placeholder="Prefer a callback? Please let us know a time good for you.  Please put any relevant details about the kiosk deployment here."></textarea>
 {{ .csrfField }}
-<button type="submit">Send</button>
+<button id="button" type="submit">Send</button>
 </form>
 </div>
 </main>
@@ -40,17 +39,15 @@ var app = new Vue({
 	el: '#app',
 	methods: {
 	submitForm: function (x) {
-		console.log('submitting message...', x)
-		console.log('target...', x.target)
 		fetch('/', { method: 'POST',
-			headers: { "X-CSRF-Token": document.getElementById("myForm").elements["gorilla.csrf.Token"].value },
+			headers: { "X-CSRF-Token": x.target.elements["gorilla.csrf.Token"].value },
 			credentials: 'same-origin',
 			body: new FormData(x.target) })
-		.then(function () {
-			alert('Your form was submitted!');
-		}, function () {
-			alert('Form submission failed');
-		});
+		.then(() => {
+			var button = document.getElementById("button")
+			button.disabled = true
+			button.innerText = 'Sent!'
+		})
 	}
 	}
 })

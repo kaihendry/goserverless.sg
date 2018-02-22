@@ -83,16 +83,16 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(r.Form)
-	fmt.Println(r.PostForm)
-	fmt.Println(r.PostFormValue("organization"))
-	// fmt.Println(r.Body)
+	// fmt.Println(r.Form)
+	// fmt.Println(r.PostForm)
+	// fmt.Println(r.PostFormValue("organization"))
+	// // fmt.Println(r.Body)
 
-	for key, values := range r.PostForm { // range over map
-		for _, value := range values { // range over []string
-			log.Infof("Key: %v Value: %v", key, value)
-		}
-	}
+	// for key, values := range r.PostForm { // range over map
+	// 	for _, value := range values { // range over []string
+	// 		log.Infof("Key: %v Value: %v", key, value)
+	// 	}
+	// }
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
 	if err != nil {
