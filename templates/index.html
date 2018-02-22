@@ -15,7 +15,7 @@ main {
 	grid-column-gap: 1em;
 	grid-template-areas: "why video"
                          "product contact"
-                         "services ."
+                         "count pricing"
 						 "footer footer"
   }
 
@@ -26,7 +26,8 @@ main {
 						  "video"
 						  "contact"
 						  "product"
-						  "services"
+						  "count"
+						  "pricing"
 						  "footer";
   }
 }
@@ -37,14 +38,15 @@ table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
 
 #why { grid-area: why; }
 #video { grid-area: video; }
-#services { grid-area: services; }
+#count { grid-area: count; }
+#pricing { grid-area: pricing; }
 #product { grid-area: product; }
 #contact { grid-area: contact; }
 footer { grid-area: footer; }
 
 .sg { color : red }
 form { display: flex; flex-direction: column; }
-form input,textarea { margin: 0.5em; padding: 0.5em }
+input,textarea { margin: 0.1em; font-size: larger; padding: 0.3em }
 .button {
   display: inline-block;
   padding: 15px 25px;
@@ -111,13 +113,13 @@ And faster iteration speeds!
 
 <p>View <a href="https://hendry.iki.fi/cv/resume.html">my CV</a>, watch my <a
 	href="https://engineers.sg/episodes/search?search=kai+hendry">presentations</a>
-and learn with an introduction to <a
+and try an introduction to <a
  href="https://www.youtube.com/watch?v=ckNUGahEe8w">Serverless with Apex
  UP</a>.</p>
 
 </div>
 
-<div id="services">
+<div id="count">
 <h2>Serverless demo</h2>
 
 <table>
@@ -130,8 +132,25 @@ and learn with an introduction to <a
 	<td>${ index + 1 }</td><td>${ region.name }</td><td>${ region.count }</td>
 </tr>
 </table>
+</div>
+
+<div id="pricing">
+
+<h3>Estimating serverless costs of this demo</h3>
+
+<p>Assuming an execution time of 100ms or less on minimum 128 lambda as this demo is configured and <strong>ignoring Free Tier</strong>.</p>
+
+<p><label>Number of requests: <input v-model="requests"></label></p>
+
+<p><label>Estimated outbound bandwidth in GB<input v-model="outbound"></label></p>
+<p><a href="https://aws.amazon.com/lambda/pricing/">Lambda</a>: $0.20 per 1 million requests = ${ requestcost }</p>
+<p>Lambda: $0.000000208 per &lt;= 100 ms request duration = ${ durationcost.toFixed(2) }</p>
+<p><a href="https://aws.amazon.com/api-gateway/pricing">API Gateway</a>: $4.25 per million = ${ gwcost }</p>
+<p>Outbound Data Transfer Costs: $0.12/GB = ${ outboundcost }</p>
+<p><strong>Total: ${ total } USD</strong></p>
 
 </div>
+
 <div id="contact">
 <h3>Contact form</h3>
 <form id="myForm" v-on:submit.prevent="submitForm">
@@ -141,13 +160,14 @@ and learn with an introduction to <a
 <input required type=text name=organization placeholder="Organisation">
 <input type=tel name=tel placeholder="Telephone">
 <input type=url name=url placeholder="https://example.sg">
-<textarea rows=5 name="notes" placeholder="Prefer a callback? Please let us know a time good for you.  Please put any relevant details about the kiosk deployment here."></textarea>
+<textarea rows=5 name="notes" placeholder="Prefer a callback? Please let me know a time good for you."></textarea>
 {{ .csrfField }}
 <br>
 <button class="button" id="button" type="submit">Send</button>
 </form>
 </div>
 <footer>
+<hr>
 <p>Go Serverless is a brand operating under © <a href="https://webconverger.com/">Webconverger Pte Ltd</a> 2007-2018, Company No. 201211208C, 30 Duxton Road #02-00, 089494, Singapore.</p>
 </footer>
 </main>
@@ -173,7 +193,7 @@ var app = new Vue({
 
 var app = new Vue({
 	delimiters: ['${', '}'],
-	el: '#services',
+	el: '#count',
 	data: {
 		regions: {}
 	},
@@ -187,6 +207,23 @@ var app = new Vue({
 		this.goGet()
 	}
 })
+
+var app = new Vue({
+	delimiters: ['${', '}'],
+	el: '#pricing',
+	data: {
+		requests: 100,
+		outbound: 0.01
+	},
+    computed: {
+		requestcost: function() { return this.requests * 0.20 / 1000000 },
+		durationcost: function() { return this.requests * 0.000000208 },
+		gwcost: function() { return this.requests * 0.00000425 },
+		outboundcost: function() { return this.outbound * 0.12 },
+		total: function() { return (this.requestcost + this.durationcost + this.gwcost + this.outboundcost).toFixed(2) }
+	}
+})
+
 </script>
 
 </body>
