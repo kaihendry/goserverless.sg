@@ -105,7 +105,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	svc := ses.New(cfg)
 	input := &ses.SendEmailInput{
-		Source: aws.String(fmt.Sprintf("%s %s <hendry@goserverless.sg>", r.PostFormValue("given-name"), r.PostFormValue("family-name"))),
+		Source: aws.String(fmt.Sprintf("%s <hendry@goserverless.sg>", r.PostFormValue("name"))),
 		Destination: &ses.Destination{
 			ToAddresses: []string{
 				"hendry@goserverless.sg",

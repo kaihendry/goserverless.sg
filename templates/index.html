@@ -86,7 +86,7 @@ input,textarea { margin: 0.1em; font-size: larger; padding: 0.3em }
 	<li>Reliable</li>
 </ol>
 
-And faster iteration speeds!
+And faster development iteration speeds!
 </div>
 <div id="video">
 <video poster="https://res.cloudinary.com/hendry/image/upload/f_auto,q_auto:eco/v1519267526/me_stj81s.jpg" width="640" height="360" controls src="https://s.natalian.org/2018-02-20/Goserverless.SG.mp4"></video>
@@ -109,6 +109,7 @@ And faster iteration speeds!
 <li>Testing</li>
 <li>Developing applications using AWS SDK APIs</li>
 <li>Multiple region handling</li>
+<li>Frustrated developers</li>
 </ul>
 
 <p>View <a href="https://hendry.iki.fi/cv/resume.html">my CV</a>, watch my <a
@@ -154,8 +155,7 @@ and try an introduction to <a
 <div id="contact">
 <h3>Contact form</h3>
 <form id="myForm" v-on:submit.prevent="submitForm">
-<input required type=text name=given-name placeholder="First" autofocus>
-<input required type=text name=family-name placeholder="Last">
+<input required type=text name=name placeholder="Full name" autofocus>
 <input required type=email name=email placeholder="email@example.com">
 <input required type=text name=organization placeholder="Organisation">
 <input type=tel name=tel placeholder="Telephone">
@@ -175,7 +175,7 @@ and try an introduction to <a
 <script>
 var app = new Vue({
 	delimiters: ['${', '}'],
-	el: '#app',
+	el: '#contact',
 	methods: {
 	submitForm: function (x) {
 		fetch('/', { method: 'POST',
