@@ -69,7 +69,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload string
+	// var payload string
 	// payload, err := ioutil.ReadAll(r.Body)
 	// defer r.Body.Close()
 	// if err != nil {
@@ -77,18 +77,17 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
-	err = r.ParseForm()
+	err = r.ParseMultipartForm(0)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
+	fmt.Println(r.Form)
 	fmt.Println(r.PostForm)
-	fmt.Println(r.PostForm["hat"])
-	fmt.Println(r.Body)
+	// fmt.Println(r.Body)
 
 	for key, values := range r.PostForm { // range over map
-		log.Info("Here")
 		for _, value := range values { // range over []string
 			log.Infof("Key: %v Value: %v", key, value)
 		}
@@ -113,7 +112,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			Body: &ses.Body{
 				Text: &ses.Content{
 					Charset: aws.String("UTF-8"),
-					Data:    aws.String(fmt.Sprintf("Dump: %s\nForm: %s", dump, string(payload))),
+					Data:    aws.String(string(dump)),
 				},
 			},
 			Subject: &ses.Content{
