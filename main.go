@@ -85,6 +85,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(r.Form)
 	fmt.Println(r.PostForm)
+	fmt.Println(r.PostFormValue("organization"))
 	// fmt.Println(r.Body)
 
 	for key, values := range r.PostForm { // range over map
@@ -102,7 +103,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	svc := ses.New(cfg)
 	input := &ses.SendEmailInput{
-		Source: aws.String("hendry@goserverless.sg"),
+		Source: aws.String(fmt.Sprintf("%s %s <hendry@goserverless.sg>", r.PostFormValue("given-name"), r.PostFormValue("family-name"))),
 		Destination: &ses.Destination{
 			ToAddresses: []string{
 				"hendry@goserverless.sg",
@@ -117,7 +118,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			},
 			Subject: &ses.Content{
 				Charset: aws.String("UTF-8"),
-				Data:    aws.String("Test email"),
+				Data:    aws.String(fmt.Sprintf("Inquiry from %s", r.PostFormValue("organization"))),
 			},
 		},
 	}
