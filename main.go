@@ -24,6 +24,7 @@ func main() {
 	app := pat.New()
 
 	app.Post("/", handlePost)
+	app.Get("/ap-southeast-1", handleCount)
 	app.Get("/", handleIndex)
 
 	var options []csrf.Option
@@ -135,4 +136,18 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, string(jsonb))
+}
+
+func handleCount(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(struct {
+		Count int `json:"count"`
+	}{
+		Count: 4,
+	})
+
+	return
+
 }

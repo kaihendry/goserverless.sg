@@ -35,8 +35,8 @@ And fast iteration speeds!
 <div>
 <video poster="http://res.cloudinary.com/hendry/image/upload/f_auto,q_auto:eco/v1519267526/me_stj81s.jpg" width="640" height="360" controls src="https://s.natalian.org/2018-02-20/Goserverless.SG.mp4"></video>
 </div>
-<div>
-Number of AWS services in Singapore
+<div id="services">
+Number of AWS services in Singapore ${ count }
 </div>
 <div id="app">
 <h3>Please get in touch</h3>
@@ -75,6 +75,24 @@ var app = new Vue({
 			button.innerText = 'Sent!'
 		})
 	}
+	}
+})
+
+var app = new Vue({
+	delimiters: ['${', '}'],
+	el: '#services',
+	data: {
+		count: 0
+	},
+	methods: {
+		async goGet () {
+			var response = await fetch("/ap-southeast-1");
+			var json = await response.json();
+			this.count = json.count
+		}
+	},
+	created: function() {
+		this.goGet()
 	}
 })
 </script>
