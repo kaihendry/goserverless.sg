@@ -16,12 +16,39 @@ main {
 	grid-auto-columns: fit-content(20%);
 	grid-template-rows: fit-content(40%);
 }
+.sg { color : red }
+form { display: flex; flex-direction: column; }
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+.button:disabled {
+  background-color: grey;
+}
 </style>
 </head>
 <body>
 <main>
 <div>
-Why go serverless {{ .EmojiCountry }}?
+<h1>Why go serverless {{ .EmojiCountry }}?</h1>
 
 <ol>
 	<li>Reduce costs</li>
@@ -36,25 +63,28 @@ And fast iteration speeds!
 <video poster="http://res.cloudinary.com/hendry/image/upload/f_auto,q_auto:eco/v1519267526/me_stj81s.jpg" width="640" height="360" controls src="https://s.natalian.org/2018-02-20/Goserverless.SG.mp4"></video>
 </div>
 <div id="services">
-Number of AWS services in Singapore ${ count }
+<h3>AWS region rank by service count</h3>
+
+<ol>
+<li v-for="region in regions" v-bind:class="{ sg: region.name == 'ap-southeast-1' }">
+  ${ region.name } - ${ region.count }
+</li>
+</ol>
+
 </div>
 <div id="app">
-<h3>Please get in touch</h3>
+<h3>Contact form</h3>
 <form id="myForm" v-on:submit.prevent="submitForm">
 <input required type=text name=given-name placeholder="First" autofocus>
 <input required type=text name=family-name placeholder="Last">
 <input required type=email name=email placeholder="email@example.com">
 <input required type=text name=organization placeholder="Organisation">
-<input type=text name=street-address placeholder="Street">
-<input type=text name=address-level2 placeholder="City">
-<input type=text name=country-name placeholder="Country">
-<input type=text name=postal-code placeholder="Postal code">
 <input type=tel name=tel placeholder="Telephone">
-<input type=url name=url placeholder="https://example.com">
+<input type=url name=url placeholder="https://example.sg">
 <textarea rows=5 name="notes" placeholder="Prefer a callback? Please let us know a time good for you.  Please put any relevant details about the kiosk deployment here."></textarea>
 {{ .csrfField }}
 <br>
-<button id="button" type="submit">Send</button>
+<button class="button" id="button" type="submit">Send</button>
 </form>
 </div>
 </main>
@@ -82,13 +112,12 @@ var app = new Vue({
 	delimiters: ['${', '}'],
 	el: '#services',
 	data: {
-		count: 0
+		regions: {}
 	},
 	methods: {
 		async goGet () {
 			var response = await fetch("/ap-southeast-1");
-			var json = await response.json();
-			this.count = json.count
+			this.regions = await response.json();
 		}
 	},
 	created: function() {

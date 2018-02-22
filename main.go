@@ -6,15 +6,16 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"sort"
 	"strings"
 
 	"html/template"
 
 	"github.com/apex/log"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/endpoints"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ses"
-	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/pat"
 )
@@ -140,14 +141,29 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 func handleCount(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "application/json")
+	type AWSRegion struct {
+		Name         string `json:"name"`
+		ServiceCount int    `json:"count"`
+	}
+	var regions []AWSRegion
 
-	json.NewEncoder(w).Encode(struct {
-		Count int `json:"count"`
-	}{
-		Count: 4,
+	resolver := endpoints.NewDefaultResolver()
+	partitions := resolver.Partitions()
+
+	for _, p := range partitions {
+		for id, r := range p.Regions() {
+			services := r.Services()
+			// fmt.Println("*", id, "number of services", len(services))
+			regions = append(regions, AWSRegion{id, len(services)})
+		}
+	}
+	sort.Slice(regions, func(i, j int) bool {
+		return regions[i].ServiceCount > regions[j].ServiceCount
 	})
 
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(regions)
 	return
 
 }
