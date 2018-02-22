@@ -2,19 +2,44 @@
 <html lang=en>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<title>Serverless professional services in Singapore</title>
 <script src="https://unpkg.com/vue"></script>
 <style>
+body { font-family: sans-serif; margin: 0; }
 main {
+	margin: 1rem auto; 
+	width: 80%;
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(2, 1fr);
+	grid-column-gap: 1em;
+	grid-auto-columns: fit-content(20%);
 	grid-template-rows: fit-content(40%);
 }
 </style>
 </head>
 <body>
 <main>
-<p>Country:  {{ .EmojiCountry }}</p>
+<div>
+Why go serverless {{ .EmojiCountry }}?
+
+<ol>
+	<li>Reduce costs</li>
+	<li>Reduce complexity</li>
+	<li>Scalable</li>
+	<li>Reliable</li>
+</ol>
+
+And fast iteration speeds!
+</div>
+<div>
+<video poster="http://res.cloudinary.com/hendry/image/upload/f_auto,q_auto:eco/v1519267526/me_stj81s.jpg" width="640" height="360" controls src="https://s.natalian.org/2018-02-20/Goserverless.SG.mp4"></video>
+</div>
+<div>
+Number of AWS services in Singapore
+</div>
 <div id="app">
+<h3>Please get in touch</h3>
 <form id="myForm" v-on:submit.prevent="submitForm">
 <input required type=text name=given-name placeholder="First" autofocus>
 <input required type=text name=family-name placeholder="Last">
@@ -28,6 +53,7 @@ main {
 <input type=url name=url placeholder="https://example.com">
 <textarea rows=5 name="notes" placeholder="Prefer a callback? Please let us know a time good for you.  Please put any relevant details about the kiosk deployment here."></textarea>
 {{ .csrfField }}
+<br>
 <button id="button" type="submit">Send</button>
 </form>
 </div>
