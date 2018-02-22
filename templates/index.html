@@ -3,8 +3,18 @@
 <head>
 <meta charset="utf-8">
 <script src="https://unpkg.com/vue"></script>
+<style>
+main {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+grid-template-rows: fit-content(40%);
+
+}
+</style>
 </head>
 <body>
+<main>
+<p>Country:  {{ .EmojiCountry }}</p>
 <div id="app">
 <form id="myForm" v-on:submit.prevent="submitForm">
 <input v-model="message">
@@ -13,6 +23,7 @@
 <button type="submit">Send</button>
 </form>
 </div>
+</main>
 
 <script>
 var app = new Vue({
@@ -39,15 +50,6 @@ var app = new Vue({
 	}
 })
 </script>
-
-
-<p>Country:  {{ .EmojiCountry }}</p>
-<p>Stage:  {{ .Stage }}</p>
-
-<form method=POST>
-{{ .csrfField }}
-<button type="submit">Send</button>
-</form>
 
 </body>
 </html>
