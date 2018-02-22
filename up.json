@@ -11,6 +11,7 @@
 		}
 },
 	"error_pages": {
+		"disable": true,
 		"variables": {
 			"support_email": "hendry@goserverless.sg",
 			"color": "#e08b8b"

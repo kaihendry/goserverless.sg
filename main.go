@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"strings"
 
@@ -63,11 +63,35 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
 
-	payload, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
+	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
+	}
+
+	var payload string
+	// payload, err := ioutil.ReadAll(r.Body)
+	// defer r.Body.Close()
+	// if err != nil {
+	// 	http.Error(w, err.Error(), 500)
+	// 	return
+	// }
+
+	err = r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	fmt.Println(r.PostForm)
+	fmt.Println(r.PostForm["hat"])
+	fmt.Println(r.Body)
+
+	for key, values := range r.PostForm { // range over map
+		log.Info("Here")
+		for _, value := range values { // range over []string
+			log.Infof("Key: %v Value: %v", key, value)
+		}
 	}
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
@@ -89,7 +113,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 			Body: &ses.Body{
 				Text: &ses.Content{
 					Charset: aws.String("UTF-8"),
-					Data:    aws.String(string(payload)),
+					Data:    aws.String(fmt.Sprintf("Dump: %s\nForm: %s", dump, string(payload))),
 				},
 			},
 			Subject: &ses.Content{
