@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -9,6 +10,10 @@ import (
 	"html/template"
 
 	"github.com/apex/log"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"github.com/aws/aws-sdk-go-v2/service/ses"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/pat"
 )
@@ -56,5 +61,46 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Oh hai")
+
+	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	cfg.Region = endpoints.UsWest2RegionID
+
+	svc := ses.New(cfg)
+	input := &ses.SendEmailInput{
+		Source: aws.String("hendry@goserverless.sg"),
+		Destination: &ses.Destination{
+			ToAddresses: []string{
+				"hendry@goserverless.sg",
+			},
+		},
+		Message: &ses.Message{
+			Body: &ses.Body{
+				Text: &ses.Content{
+					Charset: aws.String("UTF-8"),
+					Data:    aws.String("This is the message body in text format."),
+				},
+			},
+			Subject: &ses.Content{
+				Charset: aws.String("UTF-8"),
+				Data:    aws.String("Test email"),
+			},
+		},
+	}
+
+	req := svc.SendEmailRequest(input)
+	result, err := req.Send()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	jsonb, err := json.Marshal(result)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf(w, string(jsonb))
 }
