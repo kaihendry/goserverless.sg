@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,minimum-scale=1">
 <meta name="description" content="AWS Serverless professional services, training and consultancy, based in Singapore. Please make an enquiry."/>
 <title>Serverless professional services in Singapore</title>
-<script src="https://unpkg.com/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.min.js"></script>
 <style>
 body { font-family: "Segoe UI", "Seravek", sans-serif; margin: 0; }
 main {
@@ -200,7 +200,7 @@ var app = new Vue({
 	},
 	methods: {
 		async goGet () {
-			var response = await fetch("/ap-southeast-1");
+			var response = await fetch("/rank");
 			this.regions = await response.json();
 		}
 	},

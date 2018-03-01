@@ -25,7 +25,7 @@ func main() {
 	app := pat.New()
 
 	app.Post("/", handlePost)
-	app.Get("/ap-southeast-1", handleCount)
+	app.Get("/rank", handleRank)
 	app.Get("/", handleIndex)
 
 	var options []csrf.Option
@@ -139,7 +139,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(jsonb))
 }
 
-func handleCount(w http.ResponseWriter, r *http.Request) {
+func handleRank(w http.ResponseWriter, r *http.Request) {
 
 	type AWSRegion struct {
 		Name         string `json:"name"`
