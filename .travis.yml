@@ -13,8 +13,10 @@ script:
   # Build and run the main test case
   - go test ./...
   # Run the go build on port env PORT configured
-  - go run main.go
-  
+  # and this runs in the background with the & symbol
+  # (so the next step can runs)
+  - go run main.go &
+
 # deploy:
 #     - provider: script
 #       skip_cleanup: true
