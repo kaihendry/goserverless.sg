@@ -3,10 +3,13 @@ language: go
 go:
 - tip
 before_install:
-- curl -sf https://up.apex.sh/install | sudo sh
-- sudo up upgrade
+  # Install the up tool chain
+  - curl -sf https://up.apex.sh/install | sudo sh
+  # Perform any upgrade on the up tool chain as needed
+  - sudo up upgrade
 script:
-  - up
+  # Install the go project dependencies
+  - go get ./...
 # deploy:
 #     - provider: script
 #       skip_cleanup: true
