@@ -2,11 +2,16 @@ sudo: required
 language: go
 go:
 - tip
+# Our CLI toolchain is based on node_js
+node_js: "8.10"
+# Installation of subdependencies
 before_install:
   # Install the up toolchain
   - curl -sf https://up.apex.sh/install | sudo sh
   # Perform any upgrade on the up toolchain as needed
   - sudo up upgrade
+  # Installing of uilicious toolchain
+  - npm install -g uilicious-cli
 script:
   # Install the go project dependencies
   - go get ./...
