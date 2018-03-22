@@ -2,17 +2,37 @@ sudo: required
 language: go
 go:
 - tip
+# Our CLI toolchain is based on node_js
+node_js: "8.10"
+# Installation of subdependencies
 before_install:
-- curl -sf https://up.apex.sh/install | sudo sh
-- sudo up upgrade
+  # # Install the up toolchain
+  # - curl -sf https://up.apex.sh/install | sudo sh
+  # # Perform any upgrade on the up toolchain as needed
+  # - sudo up upgrade
+  # Installing of uilicious toolchain
+  - npm install -g uilicious-cli
+# Building and testing on travis
+script:
+  # Install the go project dependencies
+  - go get ./...
+  # Build and run the main test case
+  - go test ./...
+  # Run the go build on port env PORT configured
+  # and this runs in the background with the & symbol
+  # (so the next step can runs)
+  - go run main.go &
+  # Lets run the uilicious test case!
+  - uilicious-cli run "goserverless.sg" "Sanity check" --ngrokPort $PORT --ngrokParam "url" -u "$UILICIOUS_EMAIL" -p "$UILICIOUS_PASS" 
+# The actual deploy scripts
 deploy:
-    - provider: script
-      skip_cleanup: true
-      script: up deploy # https://beta.goserverless.sg/
-      on:
-        branch: master
-    - provider: script
-      skip_cleanup: true
-      script: up deploy production # https://goserverless.sg/
-      on:
-        tags: true
+    # - provider: script
+    #   skip_cleanup: true
+    #   script: up deploy # https://beta.goserverless.sg/
+    #   on:
+    #     branch: master
+    # - provider: script
+    #   skip_cleanup: true
+    #   script: up deploy production # https://goserverless.sg/
+    #   on:
+    #     tags: true
