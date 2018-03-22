@@ -10,6 +10,8 @@ before_install:
 script:
   # Install the go project dependencies
   - go get ./...
+  # Build and run the main test case
+  - go test ./...
 # deploy:
 #     - provider: script
 #       skip_cleanup: true
