@@ -7,11 +7,12 @@ node_js: "8.10"
 # Installation of subdependencies
 before_install:
   # Install the up toolchain
-  # - curl -sf https://up.apex.sh/install | sudo sh
-  # Perform any upgrade on the up toolchain as needed
-  # - sudo up upgrade
+  - curl -sf https://up.apex.sh/install | sudo sh
+  Perform any upgrade on the up toolchain as needed
+  - sudo up upgrade
   # Installing of uilicious toolchain
   - npm install -g uilicious-cli
+# Building and testing on travis
 script:
   # Install the go project dependencies
   - go get ./...
@@ -23,15 +24,15 @@ script:
   - go run main.go &
   # Lets run the uilicious test case!
   - uilicious-cli run "goserverless.sg" "Sanity check" --ngrokPort $PORT --ngrokParam "url" -u "$UILICIOUS_EMAIL" -p "$UILICIOUS_PASS" 
-
-# deploy:
-#     - provider: script
-#       skip_cleanup: true
-#       script: up deploy # https://beta.goserverless.sg/
-#       on:
-#         branch: master
-#     - provider: script
-#       skip_cleanup: true
-#       script: up deploy production # https://goserverless.sg/
-#       on:
-#         tags: true
+# The actual deploy scripts
+deploy:
+    - provider: script
+      skip_cleanup: true
+      script: up deploy # https://beta.goserverless.sg/
+      on:
+        branch: master
+    - provider: script
+      skip_cleanup: true
+      script: up deploy production # https://goserverless.sg/
+      on:
+        tags: true
