@@ -8,7 +8,7 @@ node_js: "8.10"
 before_install:
   # Install the up toolchain
   - curl -sf https://up.apex.sh/install | sudo sh
-  Perform any upgrade on the up toolchain as needed
+  # Perform any upgrade on the up toolchain as needed
   - sudo up upgrade
   # Installing of uilicious toolchain
   - npm install -g uilicious-cli
