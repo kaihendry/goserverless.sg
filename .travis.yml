@@ -21,6 +21,8 @@ script:
   # and this runs in the background with the & symbol
   # (so the next step can runs)
   - go run main.go &
+  # Lets run the uilicious test case!
+  - uilicious-cli run "goserverless.sg" "Sanity check" --ngrokPort $PORT --ngrokParam "url" -u "$UILICIOUS_EMAIL" -p "$UILICIOUS_PASS" 
 
 # deploy:
 #     - provider: script
