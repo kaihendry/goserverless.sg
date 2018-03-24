@@ -23,16 +23,15 @@ script:
   # (so the next step can runs)
   - go run main.go &
   # Lets run the uilicious test case!
-  - uilicious-cli run "goserverless.sg" "Sanity check" --ngrokPort $PORT --ngrokParam "url" -u "$UILICIOUS_EMAIL" -p "$UILICIOUS_PASS" 
-# The actual deploy scripts
+  - uilicious-cli run "goserverless.sg" "Sanity check" --ngrokPort $PORT --ngrokParam "url" -u "$UILICIOUS_EMAIL" -p "$UILICIOUS_PASS"
 deploy:
-    # - provider: script
-    #   skip_cleanup: true
-    #   script: up deploy # https://beta.goserverless.sg/
-    #   on:
-    #     branch: master
-    # - provider: script
-    #   skip_cleanup: true
-    #   script: up deploy production # https://goserverless.sg/
-    #   on:
-    #     tags: true
+    - provider: script
+      skip_cleanup: true
+      script: up deploy # https://beta.goserverless.sg/
+      on:
+        branch: master
+    - provider: script
+      skip_cleanup: true
+      script: up deploy production # https://goserverless.sg/
+      on:
+        tags: true
