@@ -30,7 +30,9 @@ func main() {
 
 	var options []csrf.Option
 	// If developing locally
-	options = append(options, csrf.Secure(false))
+	if os.Getenv("UP_STAGE") != "production" {
+		options = append(options, csrf.Secure(false))
+	}
 
 	if err := http.ListenAndServe(addr,
 		csrf.Protect([]byte("go-serverless"), options...)(app)); err != nil {
