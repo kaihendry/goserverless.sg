@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
@@ -17,22 +16,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ses"
 	"github.com/gorilla/csrf"
-	"github.com/gorilla/pat"
+	"github.com/gorilla/mux"
+	"github.com/tj/go/http/response"
 )
 
 func main() {
 	addr := ":" + os.Getenv("PORT")
-	app := pat.New()
+	app := mux.NewRouter()
 
-	app.Post("/", handlePost)
-	app.Get("/rank", handleRank)
-	app.Get("/", handleIndex)
+	app.HandleFunc("/", handlePost).Methods("POST")
+	app.HandleFunc("/rank", handleRank).Methods("GET")
+	app.HandleFunc("/", handleIndex).Methods("GET")
 
 	var options []csrf.Option
 	// If developing locally
-	options = append(options, csrf.Secure(false))
+	if os.Getenv("UP_STAGE") == "" {
+		// https://godoc.org/github.com/gorilla/csrf#Secure
+		log.Warn("CSRF insecure")
+		options = append(options, csrf.Secure(false))
+	}
 
 	if err := http.ListenAndServe(addr,
+		// Only protects the POST btw
 		csrf.Protect([]byte("go-serverless"), options...)(app)); err != nil {
 		log.WithError(err).Fatal("error listening")
 	}
@@ -67,37 +72,27 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		log.WithError(err).Fatal("dumping request")
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	// var payload string
-	// payload, err := ioutil.ReadAll(r.Body)
-	// defer r.Body.Close()
-	// if err != nil {
-	// 	http.Error(w, err.Error(), 500)
-	// 	return
-	// }
 
 	err = r.ParseMultipartForm(0)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		log.WithError(err).Fatal("parsing form")
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// fmt.Println(r.Form)
-	// fmt.Println(r.PostForm)
-	// fmt.Println(r.PostFormValue("organization"))
-	// // fmt.Println(r.Body)
-
-	// for key, values := range r.PostForm { // range over map
-	// 	for _, value := range values { // range over []string
-	// 		log.Infof("Key: %v Value: %v", key, value)
-	// 	}
-	// }
+	for key, values := range r.PostForm { // range over map
+		for _, value := range values { // range over []string
+			log.Infof("Key: %v Value: %v", key, value)
+		}
+	}
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
 	if err != nil {
+		log.WithError(err).Fatal("loading config")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -128,15 +123,11 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	req := svc.SendEmailRequest(input)
 	result, err := req.Send()
 	if err != nil {
+		log.WithError(err).Fatal("sending mail")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	jsonb, err := json.Marshal(result)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	fmt.Fprintf(w, string(jsonb))
+	response.JSON(w, result)
 }
 
 func handleRank(w http.ResponseWriter, r *http.Request) {
@@ -153,17 +144,14 @@ func handleRank(w http.ResponseWriter, r *http.Request) {
 	for _, p := range partitions {
 		for id, r := range p.Regions() {
 			services := r.Services()
-			// fmt.Println("*", id, "number of services", len(services))
+			if id == "ap-southeast-1" {
+				log.Infof("Service count in Singapore: %d", len(services))
+			}
 			regions = append(regions, AWSRegion{id, len(services)})
 		}
 	}
 	sort.Slice(regions, func(i, j int) bool {
 		return regions[i].ServiceCount > regions[j].ServiceCount
 	})
-
-	w.Header().Set("Content-Type", "application/json")
-
-	json.NewEncoder(w).Encode(regions)
-	return
-
+	response.JSON(w, regions)
 }
