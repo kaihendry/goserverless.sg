@@ -1,18 +1,24 @@
 sudo: required
 language: go
 go:
-- tip
+  - tip
 before_install:
-- curl -sf https://up.apex.sh/install | sudo sh
-- sudo up upgrade
-deploy:
-    - provider: script
-      skip_cleanup: true
-      script: up deploy # https://beta.goserverless.sg/
-      on:
-        branch: master
-    - provider: script
-      skip_cleanup: true
-      script: up deploy production # https://goserverless.sg/
-      on:
-        tags: true
+  - curl -sf https://up.apex.sh/install | sudo sh
+  - sudo up upgrade
+
+matrix:
+  include:
+    - env: DEPLOY=deploy_to_beta
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: up deploy  # https://beta.goserverless.sg/
+        on:
+          branch: master
+    - env: DEPLOY=deploy_tags
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: up deploy production  # https://goserverless.sg/
+        on:
+          tags: true
