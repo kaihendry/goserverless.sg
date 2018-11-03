@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"sort"
 	"strings"
 
-	"html/template"
-
 	"github.com/apex/log"
+	jsonhandler "github.com/apex/log/handlers/json"
+	"github.com/apex/log/handlers/text"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/endpoints"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -19,6 +20,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/tj/go/http/response"
 )
+
+func init() {
+	if os.Getenv("UP_STAGE") == "" {
+		log.SetHandler(text.Default)
+	} else {
+		log.SetHandler(jsonhandler.Default)
+	}
+}
 
 func main() {
 	addr := ":" + os.Getenv("PORT")
