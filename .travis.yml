@@ -5,6 +5,9 @@ go:
 before_install:
   - curl -sf https://up.apex.sh/install | sudo sh
   - sudo up upgrade
+script:
+  - env GO111MODULE=on go build
+  - env GO111MODULE=on go test
 
 matrix:
   include:
