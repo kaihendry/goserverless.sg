@@ -9,19 +9,16 @@ script:
   - env GO111MODULE=on go build
   - env GO111MODULE=on go test
 
-matrix:
-  include:
-    - env: DEPLOY=deploy_to_beta
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script: up deploy  # https://beta.goserverless.sg/
-        on:
-          branch: master
-    - env: DEPLOY=deploy_tags
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script: up deploy production  # https://goserverless.sg/
-        on:
-          tags: true
+deploy:
+  - provider: script
+    env: DEPLOY=deploy_to_beta
+    skip_cleanup: true
+    script: up deploy  # https://beta.goserverless.sg/
+    on:
+      branch: master
+  - provider: script
+    env: DEPLOY=deploy_production_on_tag
+    skip_cleanup: true
+    script: up deploy production  # https://goserverless.sg/
+    on:
+      tags: true
