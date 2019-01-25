@@ -16,71 +16,73 @@ main {
 	display: grid;
 	grid-column-gap: 1em;
 	grid-template-areas: "why video"
-                         "product contact"
-                         "count pricing"
-						 "footer footer"
+	"product contact"
+	"count pricing"
+	"footer footer"
+}
+
+  @media screen and (max-width: 1000px) {
+	  main {
+		  grid-row-gap: 1em;
+		  grid-template-areas:"why"
+		  "video"
+		  "contact"
+		  "product"
+		  "count"
+		  "pricing"
+		  "footer";
+	  }
   }
 
-@media screen and (max-width: 1000px) {
-  main {
-	  grid-row-gap: 1em;
-	  grid-template-areas:"why"
-						  "video"
-						  "contact"
-						  "product"
-						  "count"
-						  "pricing"
-						  "footer";
+  video { max-width: 100%; height: auto; }
+  th { vertical-align: top; }
+  tr th, tr td { text-align: left; }
+  table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
+
+  #why { grid-area: why; }
+  #video { grid-area: video; }
+  #count { grid-area: count; }
+  #pricing { grid-area: pricing; }
+  #product { grid-area: product; }
+  #contact { grid-area: contact; }
+  footer { grid-area: footer; }
+
+  .sg { color : red }
+  form { display: flex; flex-direction: column; }
+  input,textarea { margin: 0.1em; font-size: larger; padding: 0.3em }
+  .button {
+	  display: inline-block;
+	  padding: 15px 25px;
+	  font-size: 24px;
+	  cursor: pointer;
+	  text-align: center;
+	  text-decoration: none;
+	  outline: none;
+	  color: #fff;
+	  background-color: #4CAF50;
+	  border: none;
+	  border-radius: 15px;
+	  box-shadow: 0 9px #999;
   }
-}
 
-video { max-width: 100%; height: auto; }
-th { vertical-align: top; }
-tr th, tr td { text-align: left; }
-table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
+  .button:hover {background-color: #3e8e41}
 
-#why { grid-area: why; }
-#video { grid-area: video; }
-#count { grid-area: count; }
-#pricing { grid-area: pricing; }
-#product { grid-area: product; }
-#contact { grid-area: contact; }
-footer { grid-area: footer; }
-
-.sg { color : red }
-form { display: flex; flex-direction: column; }
-input,textarea { margin: 0.1em; font-size: larger; padding: 0.3em }
-.button {
-  display: inline-block;
-  padding: 15px 25px;
-  font-size: 24px;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  outline: none;
-  color: #fff;
-  background-color: #4CAF50;
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 9px #999;
-}
-
-.button:hover {background-color: #3e8e41}
-
-.button:active {
-  background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-.button:disabled {
-  background-color: grey;
-}
+  .button:active {
+	  background-color: #3e8e41;
+	  box-shadow: 0 5px #666;
+	  transform: translateY(4px);
+  }
+  .button:disabled {
+	  background-color: grey;
+  }
 </style>
 </head>
 <body>
 <main>
 <div id="why">
 <h1>Why go serverless {{ .EmojiCountry }}?</h1>
+
+<p>You don't have to spend time administrating your servers. <br>No servers to manage? <strong>Serverless</strong></p>
 
 <ol>
 	<li>Improve security</li>
@@ -125,9 +127,7 @@ And <strong>fast development iteration speeds</strong>!
 
 <p>Connect on <a href="https://www.linkedin.com/in/kaihendry/">LinkedIn</a>, view <a href="https://hendry.iki.fi/cv/resume.html">my CV</a>, watch my <a
 	href="https://engineers.sg/episodes/search?search=kai+hendry">presentations</a>
-and try an introduction to <a
- href="https://www.youtube.com/watch?v=ckNUGahEe8w">Serverless with Apex
- UP</a>.</p>
+and <a href="https://www.youtube.com/playlist?list=PLiKgVPlhUNuxd4HSPoFBINxG53U5gmU6v">my videos on Serverless</a>.</p>
 
 </div>
 
@@ -179,7 +179,7 @@ and try an introduction to <a
 </div>
 <footer>
 <hr>
-<p>Go Serverless is a brand operating under © <a href="https://webconverger.com/">Webconverger Pte Ltd</a> 2007-2018, Company No. 201211208C, 30 Duxton Road #02-00, 089494, Singapore.</p>
+<p>Go Serverless is a brand operating under © <a href="https://webconverger.com/">Webconverger Pte Ltd</a> 2007-{{ .Year }}, Company No. 201211208C, 30 Duxton Road #02-00, 089494, Singapore.</p>
 </footer>
 </main>
 

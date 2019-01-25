@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/apex/log"
 	jsonhandler "github.com/apex/log/handlers/json"
@@ -73,6 +74,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 	t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
 		"Stage":          os.Getenv("UP_STAGE"),
+		"Year":           time.Now().Format("2006"),
 		"EmojiCountry":   countryFlag(strings.Trim(r.Header.Get("Cloudfront-Viewer-Country"), "[]")),
 	})
 }
