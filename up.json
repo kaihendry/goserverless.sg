@@ -1,19 +1,21 @@
 {
-	"name": "goserverless",
-	"profile": "gosls",
-	"regions": ["ap-southeast-1"],
-	"stages": {
-		"production": {
-			"domain": "goserverless.sg"
-		},
-		"staging": {
-			"domain": "beta.goserverless.sg"
-		}
-},
-	"error_pages": {
-		"variables": {
-			"support_email": "hendry@goserverless.sg",
-			"color": "#e08b8b"
-		}
-	}
+  "name": "goserverless",
+  "profile": "gosls",
+  "regions": [
+    "ap-southeast-1"
+  ],
+  "stages": {
+    "production": {
+      "domain": "goserverless.sg"
+    },
+    "staging": {
+      "domain": "beta.goserverless.sg"
+    }
+  },
+  "error_pages": {
+    "variables": {
+      "support_email": "hendry@goserverless.sg",
+      "color": "#e08b8b"
+    }
+  }
 }
