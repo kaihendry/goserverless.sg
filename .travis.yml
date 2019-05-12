@@ -10,7 +10,9 @@ deploy:
   - provider: script
     env: DEPLOY=deploy_to_beta
     skip_cleanup: true
-    script: up deploy  # https://beta.goserverless.sg/
+    script:
+      - up deploy  # https://beta.goserverless.sg
+      - npm run lh -- --perf=96 https://beta.goserverless.sg # https://web.dev/incorporate-performance-budgets-into-your-build-tools/
     on:
       branch: master
   - provider: script
