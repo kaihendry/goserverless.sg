@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -83,14 +84,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		log.WithError(err).Fatal("dumping request")
+		log.WithError(err).Error("dumping request")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	err = r.ParseMultipartForm(0)
 	if err != nil {
-		log.WithError(err).Fatal("parsing form")
+		log.WithError(err).Error("parsing form")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -103,7 +104,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
 	if err != nil {
-		log.WithError(err).Fatal("loading config")
+		log.WithError(err).Error("loading config")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -132,9 +133,9 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req := svc.SendEmailRequest(input)
-	result, err := req.Send()
+	result, err := req.Send(context.TODO())
 	if err != nil {
-		log.WithError(err).Fatal("sending mail")
+		log.WithError(err).Error("sending mail")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
