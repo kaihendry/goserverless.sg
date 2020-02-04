@@ -8,10 +8,12 @@ before_install:
 
 deploy:
   - provider: script
+    edge: true
     script: up deploy # https://beta.goserverless.sg
     on:
       branch: master
   - provider: script
+    edge: true
     script: up deploy production # https://goserverless.sg/
     on:
       tags: true
