@@ -14,6 +14,6 @@ jobs:
         uses: treosh/lighthouse-ci-action@v3
         with:
           urls: |
-            beta.goserverless.sg
+            https://beta.goserverless.sg
           uploadArtifacts: true
           temporaryPublicStorage: true
