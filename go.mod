@@ -1,6 +1,6 @@
 module github.com/kaihendry/goserverless.sg
 
-go 1.12
+go 1.15
 
 require (
 	github.com/apex/log v1.9.0

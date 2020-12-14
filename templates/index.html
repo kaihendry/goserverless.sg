@@ -11,7 +11,7 @@
 body { font-family: "Segoe UI", "Seravek", sans-serif; margin: 0; }
 img, video { margin-top:1em; width: 100%; }
 main {
-	margin: 1rem auto; 
+	margin: 1rem auto;
 	width: 80%;
 	display: grid;
 	grid-column-gap: 1em;
@@ -191,14 +191,19 @@ var app = new Vue({
 	el: '#contact',
 	methods: {
 	submitForm: function (x) {
+		var button = document.getElementById("button")
+		button.innerText = 'Sending...'
+		button.disabled = true
 		fetch('/', { method: 'POST',
 			headers: { "X-CSRF-Token": x.target.elements["gorilla.csrf.Token"].value },
 			credentials: 'same-origin',
 			body: new FormData(x.target) })
-		.then(() => {
-			var button = document.getElementById("button")
-			button.disabled = true
-			button.innerText = 'Sent!'
+		.then((resp) => {
+			if (resp.ok) {
+				button.innerText = 'Sent!'
+			} else {
+				button.innerText = 'Error: ' + resp.statusText
+			}
 		})
 	}
 	}

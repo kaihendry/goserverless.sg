@@ -14,6 +14,9 @@ import (
 	jsonhandler "github.com/apex/log/handlers/json"
 	"github.com/apex/log/handlers/text"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ses"
@@ -107,14 +110,28 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	sess, err := session.NewSession()
+	sess := session.New()
+	creds := credentials.NewChainCredentials(
+		[]credentials.Provider{
+			&credentials.EnvProvider{},
+			&credentials.SharedCredentialsProvider{Filename: "", Profile: "gosls"},
+			&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(sess)},
+		})
+	cfg := &aws.Config{
+		Region:                        aws.String("us-west-2"),
+		Credentials:                   creds,
+		CredentialsChainVerboseErrors: aws.Bool(true),
+	}
+
+	sess, err = session.NewSession(cfg)
 	if err != nil {
-		log.WithError(err).Error("loading config")
+		log.WithError(err).Error("unable to start session")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	svc := ses.New(sess)
+
 	input := &ses.SendEmailInput{
 		Source: aws.String(fmt.Sprintf("%s <hendry@goserverless.sg>", r.PostFormValue("name"))),
 		Destination: &ses.Destination{
@@ -139,7 +156,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	result, err := svc.SendEmail(input)
 	if err != nil {
 		log.WithError(err).Error("sending mail")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	response.JSON(w, result)
