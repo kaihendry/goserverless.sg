@@ -21,60 +21,60 @@ main {
 	"footer footer"
 }
 
-  @media screen and (max-width: 1000px) {
-	  main {
-		  grid-row-gap: 1em;
-		  grid-template-areas:"why"
-		  "video"
-		  "contact"
-		  "product"
-		  "count"
-		  "pricing"
-		  "footer";
+	  @media screen and (max-width: 1000px) {
+		  main {
+			  grid-row-gap: 1em;
+			  grid-template-areas:"why"
+			  "video"
+			  "contact"
+			  "product"
+			  "count"
+			  "pricing"
+			  "footer";
+		  }
 	  }
-  }
 
-  video { max-width: 100%; height: auto; }
-  th { vertical-align: top; }
-  tr th, tr td { text-align: left; }
-  table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
+	  video { max-width: 100%; height: auto; }
+	  th { vertical-align: top; }
+	  tr th, tr td { text-align: left; }
+	  table { border-collapse: collapse; width: 100%; margin: 0 auto 0; }
 
-  #why { grid-area: why; }
-  #video { grid-area: video; }
-  #count { grid-area: count; }
-  #pricing { grid-area: pricing; }
-  #product { grid-area: product; }
-  #contact { grid-area: contact; }
-  footer { grid-area: footer; }
+	  #why { grid-area: why; }
+	  #video { grid-area: video; }
+	  #count { grid-area: count; }
+	  #pricing { grid-area: pricing; }
+	  #product { grid-area: product; }
+	  #contact { grid-area: contact; }
+	  footer { grid-area: footer; }
 
-  .sg { color : red }
-  form { display: flex; flex-direction: column; }
-  input,textarea { margin: 0.1em; font-size: larger; padding: 0.3em }
-  .button {
-	  display: inline-block;
-	  padding: 15px 25px;
-	  font-size: 24px;
-	  cursor: pointer;
-	  text-align: center;
-	  text-decoration: none;
-	  outline: none;
-	  color: #fff;
-	  background-color: #4CAF50;
-	  border: none;
-	  border-radius: 15px;
-	  box-shadow: 0 9px #999;
-  }
+	  .sg { color : red }
+	  form { display: flex; flex-direction: column; }
+	  input,textarea { margin: 0.1em; font-size: larger; padding: 0.3em }
+	  .button {
+		  display: inline-block;
+		  padding: 15px 25px;
+		  font-size: 24px;
+		  cursor: pointer;
+		  text-align: center;
+		  text-decoration: none;
+		  outline: none;
+		  color: #fff;
+		  background-color: #4CAF50;
+		  border: none;
+		  border-radius: 15px;
+		  box-shadow: 0 9px #999;
+	  }
 
-  .button:hover {background-color: #3e8e41}
+	  .button:hover {background-color: #3e8e41}
 
-  .button:active {
-	  background-color: #3e8e41;
-	  box-shadow: 0 5px #666;
-	  transform: translateY(4px);
-  }
-  .button:disabled {
-	  background-color: grey;
-  }
+	  .button:active {
+		  background-color: #3e8e41;
+		  box-shadow: 0 5px #666;
+		  transform: translateY(4px);
+	  }
+	  .button:disabled {
+		  background-color: grey;
+	  }
 </style>
 </head>
 <body>
@@ -85,17 +85,15 @@ main {
 <p>You don't have to spend time administrating your servers. <br>No servers to manage? <strong>Serverless</strong></p>
 
 <ol>
-	<li>Simple - compute is managed</li>
-	<li>Do not pay if you don't use it &mdash; scale to zero</li>
-	<li>Improve security</li>
-	<li>Reduce costs</li>
-	<li>Reduce complexity</li>
-	<li>Automatically scales as needed</li>
-	<li>Reliable</li>
-	<li>Deliver to your customers</li>
+	<li><strong>Managed compute</strong>, no need to guess CPU / Memory requirements</li>
+	<li>Do not pay if you don't use it &mdash; <strong>Scales to zero</strong></li>
+	<li><strong>Improved security</strong> - Temporary/Ephemeral runtime</li>
+	<li>Reduce costs - <strong>pay per second</strong> of execution time, not per hour!</li>
+	<li>Monitoring / logging / alerts integrated - <strong>Reduce operational complexity</strong></li>
+	<li>Automatically scales as needed - can handle <strong>any spike</strong> on load</li>
+	<li>Reliable - <strong>leverage the public Cloud</strong>, the network and capability</li>
+	<li>Deliver to your customers - facilitates iterations as quick as <strong>two seconds</strong>!</li>
 </ol>
-
-And <strong>fast development iteration speeds</strong>!
 
 <img src=https://s.natalian.org/2018-11-03/AWS_Certified_Logo_SOA_588x300_Black.png alt="AWS certified">
 
