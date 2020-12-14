@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -14,10 +13,10 @@ import (
 	"github.com/apex/log"
 	jsonhandler "github.com/apex/log/handlers/json"
 	"github.com/apex/log/handlers/text"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/aws/endpoints"
-	"github.com/aws/aws-sdk-go-v2/aws/external"
-	"github.com/aws/aws-sdk-go-v2/service/ses"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ses"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/tj/go/http/response"
@@ -108,20 +107,19 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	cfg, err := external.LoadDefaultAWSConfig(external.WithSharedConfigProfile("gosls"))
+	sess, err := session.NewSession()
 	if err != nil {
 		log.WithError(err).Error("loading config")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	cfg.Region = endpoints.UsWest2RegionID
 
-	svc := ses.New(cfg)
+	svc := ses.New(sess)
 	input := &ses.SendEmailInput{
 		Source: aws.String(fmt.Sprintf("%s <hendry@goserverless.sg>", r.PostFormValue("name"))),
 		Destination: &ses.Destination{
-			ToAddresses: []string{
-				"hendry@goserverless.sg",
+			ToAddresses: []*string{
+				aws.String("hendry@goserverless.sg"),
 			},
 		},
 		Message: &ses.Message{
@@ -138,8 +136,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	req := svc.SendEmailRequest(input)
-	result, err := req.Send(context.TODO())
+	result, err := svc.SendEmail(input)
 	if err != nil {
 		log.WithError(err).Error("sending mail")
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -156,8 +153,7 @@ func handleRank(w http.ResponseWriter, r *http.Request) {
 	}
 	var regions []AWSRegion
 
-	resolver := endpoints.NewDefaultResolver()
-	partitions := resolver.Partitions()
+	partitions := endpoints.DefaultResolver().(endpoints.EnumPartitions).Partitions()
 
 	for _, p := range partitions {
 		for id, r := range p.Regions() {
