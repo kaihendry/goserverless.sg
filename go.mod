@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/apex/log v1.9.0
-	github.com/aws/aws-sdk-go v1.36.7
+	github.com/aws/aws-sdk-go v1.36.15
 	github.com/gorilla/csrf v1.7.0
 	github.com/gorilla/mux v1.8.0
 	github.com/tj/go v1.8.7
