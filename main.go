@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -25,6 +26,9 @@ import (
 	"github.com/tj/go/http/response"
 )
 
+//go:embed static
+var static embed.FS
+
 func init() {
 	if os.Getenv("UP_STAGE") == "" {
 		log.SetHandler(text.Default)
@@ -37,6 +41,7 @@ func main() {
 	addr := ":" + os.Getenv("PORT")
 	app := mux.NewRouter()
 
+	app.PathPrefix("/static").Handler(http.FileServer(http.Dir("./templates/")))
 	app.HandleFunc("/", handlePost).Methods("POST")
 	app.HandleFunc("/rank", handleRank).Methods("GET")
 	app.HandleFunc("/", handleIndex).Methods("GET")
@@ -73,12 +78,18 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Robots-Tag", "none")
 	}
 
-	t := template.Must(template.New("").ParseGlob("templates/*.html"))
-	err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+	t := template.Must(template.New("").ParseFS(static, "static/index.html"))
+	javascript, err := static.ReadFile("static/script.js")
+	if err != nil {
+		log.WithError(err).Fatal("error reading js")
+	}
+
+	err = t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 		csrf.TemplateTag: csrf.TemplateField(r),
 		"Stage":          os.Getenv("UP_STAGE"),
 		"Year":           time.Now().Format("2006"),
 		"EmojiCountry":   countryFlag(strings.Trim(r.Header.Get("Cloudfront-Viewer-Country"), "[]")),
+		"Javascript":     template.JS(javascript),
 	})
 
 	if err != nil {
