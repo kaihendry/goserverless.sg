@@ -29,6 +29,11 @@ import (
 //go:embed static
 var static embed.FS
 
+type AWSRegion struct {
+	Name         string `json:"name"`
+	ServiceCount int    `json:"count"`
+}
+
 func init() {
 	if os.Getenv("UP_STAGE") == "" {
 		log.SetHandler(text.Default)
@@ -41,9 +46,7 @@ func main() {
 	addr := ":" + os.Getenv("PORT")
 	app := mux.NewRouter()
 
-	app.PathPrefix("/static").Handler(http.FileServer(http.Dir("./templates/")))
 	app.HandleFunc("/", handlePost).Methods("POST")
-	app.HandleFunc("/rank", handleRank).Methods("GET")
 	app.HandleFunc("/", handleIndex).Methods("GET")
 
 	var options []csrf.Option
@@ -78,7 +81,13 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Robots-Tag", "none")
 	}
 
-	t := template.Must(template.New("").ParseFS(static, "static/index.html"))
+	funcMap := template.FuncMap{
+		"inc": func(i int) int {
+			return i + 1
+		},
+	}
+
+	t := template.Must(template.New("").Funcs(funcMap).ParseFS(static, "static/index.html"))
 	javascript, err := static.ReadFile("static/script.js")
 	if err != nil {
 		log.WithError(err).Fatal("error reading js")
@@ -90,6 +99,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		"Year":           time.Now().Format("2006"),
 		"EmojiCountry":   countryFlag(strings.Trim(r.Header.Get("Cloudfront-Viewer-Country"), "[]")),
 		"Javascript":     template.JS(javascript),
+		"Regions":        rankRegions(),
 	})
 
 	if err != nil {
@@ -173,16 +183,8 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, result)
 }
 
-func handleRank(w http.ResponseWriter, r *http.Request) {
-
-	type AWSRegion struct {
-		Name         string `json:"name"`
-		ServiceCount int    `json:"count"`
-	}
-	var regions []AWSRegion
-
+func rankRegions() (regions []AWSRegion) {
 	partitions := endpoints.DefaultResolver().(endpoints.EnumPartitions).Partitions()
-
 	for _, p := range partitions {
 		for id, r := range p.Regions() {
 			services := r.Services()
@@ -195,5 +197,5 @@ func handleRank(w http.ResponseWriter, r *http.Request) {
 	sort.Slice(regions, func(i, j int) bool {
 		return regions[i].ServiceCount > regions[j].ServiceCount
 	})
-	response.JSON(w, regions)
+	return regions
 }

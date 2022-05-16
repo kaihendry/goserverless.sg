@@ -26,23 +26,6 @@ const contact = createApp({
 contact.config.compilerOptions.delimiters = ["${", "}"];
 contact.mount("#contact");
 
-const count = createApp({
-  data() {
-    return { regions: {} };
-  },
-  methods: {
-    async goGet() {
-      var response = await fetch("/rank");
-      this.regions = await response.json();
-    },
-  },
-  created: function () {
-    this.goGet();
-  },
-});
-count.config.compilerOptions.delimiters = ["${", "}"];
-count.mount("#count");
-
 const pricing = createApp({
   data() {
     return { requests: 100, outbound: 0.01 };
