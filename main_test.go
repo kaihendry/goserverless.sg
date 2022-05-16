@@ -48,9 +48,9 @@ func TestRecorder(t *testing.T) {
 			check(hasStatus(200), containsContents("DOCTYPE"), hasHeader("Content-Type", "text/html; charset=utf-8")),
 		},
 		{
-			"200 rank",
-			handleRank,
-			check(hasStatus(200), containsContents("ap-southeast-1"), hasHeader("Content-Type", "application/json")),
+			"ap-southeast-1",
+			handleIndex,
+			check(hasStatus(200), containsContents("ap-southeast-1")),
 		},
 	}
 
