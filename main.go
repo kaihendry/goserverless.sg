@@ -189,7 +189,7 @@ func rankRegions() (regions []AWSRegion) {
 		for id, r := range p.Regions() {
 			services := r.Services()
 			if id == "ap-southeast-1" {
-				log.Infof("Service count in Singapore: %d", len(services))
+				log.Debugf("Service count in Singapore: %d", len(services))
 			}
 			regions = append(regions, AWSRegion{id, len(services)})
 		}

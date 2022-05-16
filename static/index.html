@@ -12,7 +12,7 @@
       content="AWS Serverless professional services, coaching and consultancy, based in Singapore"
     />
     <title>Serverless professional services in Singapore</title>
-    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.prod.js"></script>
     <style>
       body {
         font-family: "Segoe UI", "Seravek", sans-serif;
@@ -184,7 +184,7 @@
           </li>
         </ol>
 
-        <img
+        <img width=572 height=83
         src=https://s.natalian.org/2018-11-03/AWS_Certified_Logo_SOA_588x300_Black.png
         alt="AWS certified">
       </div>
@@ -255,9 +255,9 @@
             <td>{{ inc $i }}</td>
             {{ if eq $r.Name "ap-southeast-1" }}
             <td class="sg">{{ $r.Name }}</td>
-          {{ else }}
-          <td>{{ $r.Name }}</td>
-          {{ end }}
+            {{ else }}
+            <td>{{ $r.Name }}</td>
+            {{ end }}
             <td>{{ $r.ServiceCount }}</td>
           </tr>
           {{ end }}
