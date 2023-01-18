@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apex/gateway/v2"
 	"github.com/apex/log"
 	jsonhandler "github.com/apex/log/handlers/json"
 	"github.com/apex/log/handlers/text"
@@ -43,25 +44,22 @@ func init() {
 }
 
 func main() {
-	addr := ":" + os.Getenv("PORT")
 	app := mux.NewRouter()
 
 	app.HandleFunc("/", handlePost).Methods("POST")
 	app.HandleFunc("/", handleIndex).Methods("GET")
 
 	var options []csrf.Option
-	// If developing locally
-	if os.Getenv("UP_STAGE") == "" {
-		// https://godoc.org/github.com/gorilla/csrf#Secure
-		log.Warn("CSRF insecure")
-		options = append(options, csrf.Secure(false))
-	}
+	var err error
 
-	if err := http.ListenAndServe(addr,
-		// Only protects the POST btw
-		csrf.Protect([]byte("go-serverless"), options...)(app)); err != nil {
-		log.WithError(err).Fatal("error listening")
+	if _, ok := os.LookupEnv("AWS_EXECUTION_ENV"); ok {
+		err = gateway.ListenAndServe("", csrf.Protect([]byte("go-serverless"), options...)(app))
+	} else {
+		log.Infof("Assuming local development")
+		options = append(options, csrf.Secure(false))
+		err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), csrf.Protect([]byte("go-serverless"), options...)(app))
 	}
+	log.WithError(err).Fatal("error listening")
 }
 
 func countryFlag(x string) string {
@@ -76,10 +74,8 @@ func countryFlag(x string) string {
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
 
-	// Don't index beta.goserverless.sg
-	if os.Getenv("UP_STAGE") != "production" {
-		w.Header().Set("X-Robots-Tag", "none")
-	}
+	// set header to html content type
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	funcMap := template.FuncMap{
 		"inc": func(i int) int {
@@ -135,11 +131,11 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	creds := credentials.NewChainCredentials(
 		[]credentials.Provider{
 			&credentials.EnvProvider{},
-			&credentials.SharedCredentialsProvider{Filename: "", Profile: "gosls"},
+			&credentials.SharedCredentialsProvider{Filename: "", Profile: "mine"},
 			&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(sess)},
 		})
 	cfg := &aws.Config{
-		Region:                        aws.String("us-west-2"),
+		Region:                        aws.String("ap-southeast-1"),
 		Credentials:                   creds,
 		CredentialsChainVerboseErrors: aws.Bool(true),
 	}
@@ -154,10 +150,10 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	svc := ses.New(sess)
 
 	input := &ses.SendEmailInput{
-		Source: aws.String(fmt.Sprintf("%s <hendry@goserverless.sg>", r.PostFormValue("name"))),
+		Source: aws.String(fmt.Sprintf("%s <gosls@dabase.com>", r.PostFormValue("name"))),
 		Destination: &ses.Destination{
 			ToAddresses: []*string{
-				aws.String("hendry@goserverless.sg"),
+				aws.String("gosls@dabase.com"),
 			},
 		},
 		Message: &ses.Message{

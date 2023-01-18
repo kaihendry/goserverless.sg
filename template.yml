@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  DomainName:
+    Type: String
+  ACMCertificateArn:
+    Type: String
+
+Resources:
+  Gateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Domain:
+        DomainName: !Ref DomainName
+        CertificateArn: !Ref ACMCertificateArn
+
+  MainFunction:
+    Type: AWS::Serverless::Function
+    Architectures:
+      - x86_64
+    Metadata:
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-custom-runtimes.html
+      BuildMethod: makefile
+    Properties:
+      FunctionName: MainFunction # needed for sam logs!
+      CodeUri: ./
+      Handler: main
+      Runtime: go1.x
+      Policies:
+        # give ses send permissions
+        - AmazonSESFullAccess
+      Events:
+        CatchAll:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref Gateway
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  MainFunction:
+    Description: "First Lambda Function ARN"
+    Value: !GetAtt MainFunction.Arn
+  MainFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt MainFunctionRole.Arn
+  GatewayEndPoint:
+    Value: !Sub "https://${Gateway}.execute-api.${AWS::Region}.amazonaws.com/"
+  MainFunctionLogs:
+    Value: !Sub "sam logs --name ${MainFunction} --region ${AWS::Region} --tail"
