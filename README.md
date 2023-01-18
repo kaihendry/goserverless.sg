@@ -1,4 +1,4 @@
-![Deploy](https://github.com/kaihendry/goserverless.sg/workflows/Deploy/badge.svg)
+[![.github/workflows/sam.yml](https://github.com/kaihendry/goserverless.sg/actions/workflows/sam.yml/badge.svg)](https://github.com/kaihendry/goserverless.sg/actions/workflows/sam.yml)
 
 Simple landing page for goserverless.sg which advertises Kai Hendry's Singapore
 based serverless services and expertise.
